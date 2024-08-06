@@ -359,6 +359,7 @@
 "Assets/Scripts/Boids/Boid.cs"
 "Assets/Scripts/Boids/BoidAlignmentBehavior.cs"
 "Assets/Scripts/Boids/BoidCohesionBehavior.cs"
+"Assets/Scripts/Boids/BoidEvolution.cs"
 "Assets/Scripts/Boids/BoidRepulsionBehavior.cs"
 "Assets/Scripts/Boids/BoidSpawner.cs"
 "Assets/Scripts/Boids/TrainingManager.cs"

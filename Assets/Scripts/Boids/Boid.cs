@@ -22,25 +22,26 @@ public class Boid : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 changeVelocity = new Vector3(Random.Range(-1f, 1f),
-                                             Random.Range(-1f, 1f)
-                                             Random.Range(-1f, 1f));
+        Vector3 changeVelocity = new Vector3(Random.Range(-0.1f, 0.1f),
+                                             Random.Range(-0.1f, 0.1f),
+                                             Random.Range(-0.1f, 0.1f));
         velocity += changeVelocity;
-        float[] inputs = {transform.position.x, transform.position.y, transform.position.z, velocity.x, velocity.y, velocity.z};
-         // Log inputs
-        Debug.Log("RNN Inputs: " + string.Join(", ", inputs));
+
+        // float[] inputs = {transform.position.x, transform.position.y, transform.position.z, velocity.x, velocity.y, velocity.z};
+        //  // Log inputs
+        // Debug.Log("RNN Inputs: " + string.Join(", ", inputs));
 
         // Forward propagation to get RNN outputs
-        float[] outputs = rnnAgent.ForwardPropagation(inputs);
+        // float[] outputs = rnnAgent.ForwardPropagation(inputs);
 
-        // Log outputs
-        Debug.Log("RNN Outputs: " + string.Join(", ", outputs));
+        // // Log outputs
+        // Debug.Log("RNN Outputs: " + string.Join(", ", outputs));
 
 
-        Vector3 rnnOutputVelocity = new Vector3(outputs[0], outputs[1], outputs[2]);
+        // Vector3 rnnOutputVelocity = new Vector3(outputs[0], outputs[1], outputs[2]);
         
 
-        velocity += rnnOutputVelocity;
+        // velocity += rnnOutputVelocity;
 
         if (velocity.magnitude > maxVelocity){
             velocity = velocity.normalized * maxVelocity;
