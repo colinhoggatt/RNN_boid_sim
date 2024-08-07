@@ -6,9 +6,11 @@ public class BoidEvolution : MonoBehaviour
 {   
     // How long and how close boids must be to evolve
     public float reqProximity = 1.0f;
-    public float cohesionTime = 3.0f;
+    public float cohesionTime = 2.0f;
     private List<Boid> boids;
     private Dictionary<Boid, float> closeBoidsTime;
+    public GameObject boidPrefab;
+
 
     // Start is called before the first frame update
     void Start()
@@ -66,20 +68,51 @@ public class BoidEvolution : MonoBehaviour
         CreateChild(childRNN1, parent1.transform.position);
         CreateChild(childRNN2, parent2.transform.position);
 
-        // Destory parents
+        // Destroy parents
         Destroy(parent1.gameObject);
         Destroy(parent2.gameObject);
 
     }
 
-    public float[,] CombineAndMutate(rnn1, rnn2)
+    private RNNRLAgent CombineAndMutate(RNNRLAgent rnn1, RNNRLAgent rnn2)
     {
+        RNNRLAgent childRNN = new RNNRLAgent(rnn1.inputSize, rnn1.hiddenSize, rnn1.outputSize);
 
+        for (int i=0; i < rnn1.inputHiddenWeights.GetLength(0); i++)
+        {
+            for (int j=0; j < rnn1.inputHiddenWeights.GetLength(1); j++)
+            {
+                // 50% chance of selecting input weights from rnn1 or rnn2
+                childRNN.inputHiddenWeights[i,j] = UnityEngine.Random.value < 0.5f? rnn1.inputHiddenWeights[i,j] : rnn2.inputHiddenWeights[i,j];
+            }
+        }
+        for (int i=0; i < rnn1.hiddenHiddenWeights.GetLength(0); i++)
+        {
+            for (int j=0; j < rnn1.hiddenHiddenWeights.GetLength(1); j++)
+            {
+                // 50% chance of selecting input weights from rnn1 or rnn2
+                childRNN.hiddenHiddenWeights[i,j] = UnityEngine.Random.value < 0.5f? rnn1.hiddenHiddenWeights[i,j] : rnn2.hiddenHiddenWeights[i,j];
+            }
+        }
+        for (int i=0; i < rnn1.hiddenOutputWeights.GetLength(0); i++)
+        {
+            for (int j=0; j < rnn1.hiddenOutputWeights.GetLength(1); j++)
+            {
+                // 50% chance of selecting input weights from rnn1 or rnn2
+                childRNN.hiddenOutputWeights[i,j] = UnityEngine.Random.value < 0.5f? rnn1.hiddenOutputWeights[i,j] : rnn2.hiddenOutputWeights[i,j];
+            }
+        }
+
+        return childRNN;
     }
 
-    private void CreateChild(childRnn, parentPosition);
+    private void CreateChild(RNNRLAgent childRNN, Vector3 parentPosition)
     {
+        GameObject newBoid = Instantiate(boidPrefab, parentPosition, Quaternion.identity);
+        Boid boidComponent = newBoid.GetComponent<Boid>();
+        boidComponent.rnnAgent = childRNN;
 
+        
     }
 
 }

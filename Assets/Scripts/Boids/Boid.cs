@@ -8,6 +8,14 @@ public class Boid : MonoBehaviour
     public float maxVelocity;
     public RNNRLAgent rnnAgent;
 
+    // boundary sphere
+    public Vector3 boundaryCenter = Vector3.zero;
+    public float boundaryRadius = 3f;
+
+    //Color to indicate death
+    private Renderer renderer;
+    private Color originalColor;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,6 +23,8 @@ public class Boid : MonoBehaviour
         velocity = new Vector3(Random.Range(-1f, 1f), 
                                Random.Range(-1f, 1f), 
                                Random.Range(-1f, 1f)).normalized * maxVelocity;
+
+        
         // inputSize, hiddenSize, outputSize
         //rnnAgent = new RNNRLAgent(6, 10, 3);
     }
@@ -48,6 +58,28 @@ public class Boid : MonoBehaviour
         }
         this.transform.position += velocity * Time.deltaTime;
         this.transform.rotation = Quaternion.LookRotation(velocity);
+
+        // Boundary check
+        Vector3 offsetFromCenter = transform.position - boundaryCenter;
+        if (offsetFromCenter.magnitude > boundaryRadius)
+        {
+            // Reflect velocity to keep the boid inside the sphere
+            velocity = Vector3.Reflect(velocity, offsetFromCenter.normalized);
+        }
+
+        // Ensure the boid stays within the boundary
+        if (offsetFromCenter.magnitude > boundaryRadius)
+        {
+            transform.position = boundaryCenter + offsetFromCenter.normalized * boundaryRadius;
+        }
         
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow; // Set the color of the Gizmo
+
+        // Draw the wireframe sphere for visualization
+        Gizmos.DrawWireSphere(boundaryCenter, boundaryRadius);
     }
 }
